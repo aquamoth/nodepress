@@ -6,14 +6,17 @@ export default class Page extends Component
 {
     public get router() {
         var router = Router();
-        router.get('/', this.Index);
         return router;
     }
 
-    private Index(req: Request, res: Response) {
+    public Index(req: Request, res: Response) {
         res.json({
             message: 'Welcome to routed skeleton.',
             version: pkg.version,
         });
+    }
+
+    public WhoKnowsMe(req: Request, res: Response) {
+        res.send('Yes, who really knows me?!!');
     }
 }
