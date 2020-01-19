@@ -1,8 +1,8 @@
-import * as express from 'express';
-import * as dotenv from 'dotenv';
+import * as express from "express";
+import * as dotenv from "dotenv";
 
-import {Database} from './core/types';
-import Router from './core/np_router';
+import {Database} from "./core/types";
+import Router from "./core/router";
 
 // import * as bodyParser from 'body-parser';
 
@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 
-app.set('port', process.env.PORT || 3000);
+app.set("port", process.env.PORT || 3000);
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -22,10 +22,10 @@ const router = new Router(db);
 router.initialize(app);
 
 
-app.listen(app.get('port'), () => {
-  console.log(('App is running at http://localhost:%d in %s mode'),
-    app.get('port'), app.get('env'));
-  console.log('Press CTRL-C to stop\n');
+app.listen(app.get("port"), () => {
+  console.log(("App is running at http://localhost:%d in %s mode"),
+    app.get("port"), app.get("env"));
+  console.log("Press CTRL-C to stop\n");
 });
 
 module.exports = app;
