@@ -9,15 +9,17 @@ export default class ComponentRegister {
 
     public initialize(app:Express) {
         
-        const np_core_page = require('@components/np-core-page').default;
-
-        let components:{[route: string]: Component} = {
-            ['']: new np_core_page()
-        };
+        console.log('Loading components');
+        let components:{[route: string]: Component} = {};
         
-        for(const route in components){
-            const component = components[route];
-            app.use('/'+route, component.router);
-        }
+        const task1 = import('@components/np-core-page').then(component => components[''] = new component.default());
+
+        Promise.all([task1]).then(()=>{
+            console.log('Adding routes to server');
+            for(const route in components){
+                const component = components[route];
+                app.use('/'+route, component.router);
+            }
+        });
     }
 }
