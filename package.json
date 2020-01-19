@@ -1,0 +1,20 @@
+{
+  "name": "nodepress2",
+  "version": "0.1.0",
+  "description": "Node cms system with components and plugins",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "nodepress"
+  },
+  "keywords": [
+    "node",
+    "wordpress",
+    "cms"
+  ],
+  "author": "Mattias Åslund",
+  "license": "ISC"
+}
