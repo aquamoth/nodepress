@@ -1,4 +1,4 @@
-import { Component } from "@core/types";
+import { Component } from "../../core/types";
 import { Request, Response, Router } from "express";
 let pkg = require('../../../package.json');
 

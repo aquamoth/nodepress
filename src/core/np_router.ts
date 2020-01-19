@@ -9,7 +9,7 @@ export default class NP_Router {
     public initialize(app:Express) {
         console.log('Loading Page component');
         
-        import('@components/np-core-page').then(Page => {
+        import('../components/np-core-page').then(Page => {
             
             console.log('Adding routes to Page component');
             const page = new Page.default()

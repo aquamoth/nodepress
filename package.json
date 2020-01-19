@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "description": "Node cms system with components and plugins",
   "main": "index.js",
-  "scripts": {
-    "build": "webpack --config webpack.config.js --mode development",
-    "start": "npm run build && node ./dist/server.js",
-    "deploy": "webpack --config webpack.config.js --mode production"
-  },
   "repository": {
     "type": "git",
     "url": "nodepress"
+  },
+  "scripts": {
+    "start": "npm run build-ts && node dist/server.js",
+    "build": "npm run build-ts && npm run lint && npm run copy-static-assets",
+    "build-ts": "node node_modules/typescript/bin/tsc",
+    "lint": "node node_modules/typescript/bin/tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
+    "copy-static-assets": "ts-node copyStaticAssets.ts"
   },
   "keywords": [
     "node",
