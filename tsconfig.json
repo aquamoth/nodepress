@@ -17,6 +17,8 @@
       "removeComments": true,
       "typeRoots": [ "node_modules/@types" ],
       "paths": {
+        "@core/*": ["./server/core/*"],
+        "@components/*": ["./server/components/*"],
         "*": [
           "node_modules/@types/*",
           "./server/types/*"
