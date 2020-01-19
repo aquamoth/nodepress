@@ -4,9 +4,9 @@
   "description": "Node cms system with components and plugins",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js --mode development",
     "start": "npm run build && node ./dist/server.js",
-    "test": "test"
+    "deploy": "webpack --config webpack.config.js --mode production"
   },
   "repository": {
     "type": "git",
