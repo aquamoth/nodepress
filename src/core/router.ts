@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Component, Database } from "./types";
+import ViewEngine from "./viewengines/react";
 
 type ComponentClass = { new(): Component };
 
@@ -32,9 +33,16 @@ export default class Router {
         }
     }
 
-    public middleware (req: Request, res: Response, next: Function) {
+    public async middleware (req: Request, res: Response, next: Function) {
         console.log("Router middleware called for", req.url);
-        
+
+        const viewEngine = new ViewEngine("np2020");
+        const html = await viewEngine.render();
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.end(html);
+
+
+/*
         const route = this.buildRoute(req.url);
         console.log("Searching for component", route.component);
         
@@ -56,8 +64,8 @@ export default class Router {
             }
         }
 
-
         console.warn("Router could not find the requested component", route);
+*/
         next();
     }
 
