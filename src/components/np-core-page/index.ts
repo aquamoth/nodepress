@@ -1,5 +1,5 @@
 import { Component } from "../../core/types";
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 //const pkg = require("../../../package.json");
 
 export default class Page extends Component

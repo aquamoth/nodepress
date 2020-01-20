@@ -15,12 +15,22 @@ app.set("port", process.env.PORT || 3000);
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use("/public", express.static("dist/public"));
 
 //register components with routes
 const db = new Database();
 const router = new Router(db);
-router.initialize(app);
+app.use(router.middleware.bind(router));
 
+
+
+const plugin = (req: express.Request, res: express.Response, next: Function)=>{
+  console.log("plugin called");
+  next();
+};
+
+
+app.use(plugin);
 
 app.listen(app.get("port"), () => {
   console.log(("App is running at http://localhost:%d in %s mode"),
