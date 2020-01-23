@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Component, Database } from "./types";
+import { Component, Database, Action } from "./types";
 import ViewEngine from "./viewengines/react";
 
 type ComponentClass = { new(): Component };
@@ -36,44 +36,45 @@ export default class Router {
     public async middleware (req: Request, res: Response, next: Function) {
         console.log("Router middleware called for", req.url);
 
-        const viewEngine = new ViewEngine("np2020");
-        const html = await viewEngine.render();
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(html);
-
-
-/*
         const route = this.buildRoute(req.url);
         console.log("Searching for component", route.component);
-        
-        if (this.components.hasOwnProperty(route.component)){
-            console.log(`Searching component ${route.component} for action ${route.action}`);
-            const componentClass = this.components[route.component];
-            const component = new componentClass();
-            const action = (component as any)[route.action] as Function;
 
-            if (action){
-                console.log("Calling action in route", route);
-                action.call(component, req, res);
-                //component.call(route.action, parameters);
-                //res.send(route);
+        const action = this.findAction(req, route);
 
-                console.log("Calling next middleware");
-                next();
-                return;
-            }
+        if (action){
+            console.log("Calling action in route", route);
+            const actionResult = action(route);
+
+            const viewEngine = new ViewEngine(actionResult.template);
+            const html = await viewEngine.render(actionResult);
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end(html);
         }
-
-        console.warn("Router could not find the requested component", route);
-*/
-        next();
+        else {
+            console.warn("Router could not find the requested component", route);
+            next();
+        }
     }
 
-    private buildRoute(url: string) {
+    private buildRoute(url: string): Route {
+        //TODO: Properly decode url to Route!
         return {
             component: "np-core-page",
-            action: "WhoKnowsMe",
+            action: "Index",
             parameters: { page: 123 }
         };
+    }
+
+    private findAction(request: Request, route: Route): Action {
+        if (!this.components.hasOwnProperty(route.component))
+            return null;
+
+        console.log(`Searching component ${route.component} for action ${route.action}`);
+        const componentClass = this.components[route.component];
+        const component = new componentClass();
+        component.request = request;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const action = (component as any)[route.action].bind(component) as Action;
+        return action;
     }
 }

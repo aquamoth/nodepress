@@ -1,5 +1,5 @@
 import { renderToString } from "react-dom/server";
-import { ViewEngine } from "@core/types/viewengine";
+import { ViewEngine, ActionResult } from "@core/types/viewengine";
 
 export default class ReactViewEngine implements ViewEngine {
     private readonly path: string;
@@ -8,7 +8,7 @@ export default class ReactViewEngine implements ViewEngine {
         this.path = `../../templates/${templateName}`;
     }
 
-    public async render() {
+    public async render(actionResult: ActionResult) {
         const templateFile = await import(this.path + "/index");
         const jsx = templateFile.default();
 

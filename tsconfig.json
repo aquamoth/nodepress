@@ -18,7 +18,7 @@
       "jsx": "react",
       "rootDir": "src",
       // "removeComments": true,
-      "typeRoots": [ "node_modules/@types" ],
+      "typeRoots": [ "node_modules/@types", "@core/types" ],
       "paths": {
         "@core/*": ["src/core/*"],
         "@components/*": ["src/components/*"],
