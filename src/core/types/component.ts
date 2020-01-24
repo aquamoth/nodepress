@@ -4,11 +4,11 @@ import { ActionResult } from "./viewengine";
 export default class Component {
     public request: Request;
 
-    protected View(model: object): ActionResult {
+    protected View(model: object, view: string): ActionResult {
         return {
             model,
             template: "np2020",
-            layout: ""
+            view
         };
     }
 }

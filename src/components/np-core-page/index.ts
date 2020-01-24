@@ -7,7 +7,6 @@ export default class Page extends Component
 {
     public Index(route: Route): ActionResult {
         const model = {};
-        return this.View(model);
-        //res.send("Yes, who really knows me?!!");
+        return this.View(model, "index");
     }
 }

@@ -37,12 +37,12 @@ export default class Router {
         console.log("Router middleware called for", req.url);
 
         const route = this.buildRoute(req.url);
-        console.log("Searching for component", route.component);
+        //console.log("Searching for component", route.component);
 
         const action = this.findAction(req, route);
 
         if (action){
-            console.log("Calling action in route", route);
+            //console.log("Calling action in route", route);
             const actionResult = action(route);
 
             const viewEngine = new ViewEngine(actionResult.template);
@@ -69,7 +69,7 @@ export default class Router {
         if (!this.components.hasOwnProperty(route.component))
             return null;
 
-        console.log(`Searching component ${route.component} for action ${route.action}`);
+        //console.log(`Searching component ${route.component} for action ${route.action}`);
         const componentClass = this.components[route.component];
         const component = new componentClass();
         component.request = request;

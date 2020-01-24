@@ -3,7 +3,7 @@
     //   "server/server.ts"
     // ],
     "include": [
-      "src/**/*.ts", "src/templates/np2020/index.tsx"
+      "src/**/*.ts", "src/**/*.tsx"
     ],
     "compilerOptions": {
       "module": "commonjs",
