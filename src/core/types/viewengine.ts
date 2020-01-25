@@ -14,7 +14,7 @@ export interface ActionResult {
     view: string;
 }
 
-export type Action = (route: Route) => ActionResult;
+export type Action = (model: {}) => ActionResult;
 
 export type ViewHelper = {
     publicPath: (path: string) => string;

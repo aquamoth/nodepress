@@ -74,7 +74,7 @@ export default async (component: Promise<JSX.Element>, { publicPath, templatePat
                         </li>
                     </ul>
                     
-                    {await action({ component: "page", action: "adminBar" })}
+                    {await action({ component: "np-core-page", action: "AdminBar" })}
                     
                     <ul id="wp-admin-bar-top-secondary" className="ab-top-secondary ab-top-menu">
                         <li id="wp-admin-bar-search" className="admin-bar-search">

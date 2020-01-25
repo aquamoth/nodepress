@@ -33,24 +33,24 @@ export default class Router {
         }
     }
 
-    public async renderAction(req: Request, route: Route): Promise<string> {
+    public async renderAction(request: Request, route: Route): Promise<string> {
         if (!route) {
             console.warn("renderAction() ignores undefined route.");
             return Promise.resolve(undefined);
         }
 
         //console.log("Searching for component", route.component);
-        const action = this.findAction(req, route);
+        const action = this.findAction(request, route);
         if (!action) {
             console.warn("renderAction() ignores route to invalid action.");
             return Promise.resolve(undefined);
         }
 
         console.log("renderAction() calling action", route.component, route.action);
-        const actionResult = action(route);
+        const actionResult = action(route.parameters);
 
         console.log("renderAction() calling viewEngine.render()");
-        const viewEngine = new ViewEngine(this, actionResult.template);
+        const viewEngine = new ViewEngine(this, request, actionResult.template);
         return await viewEngine.render(actionResult);
    }
 
