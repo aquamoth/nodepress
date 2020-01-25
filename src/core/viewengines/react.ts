@@ -27,27 +27,35 @@ export default class ReactViewEngine implements ViewEngine {
             action: async (route: Route) => {
                 console.warn("React viewEngine requested to execute route", route);
                 return await this.router.renderAction(this.request, route);
+            },
+            partial: async (view: string, model?: {}) => {
+                console.warn("React viewEngine requested partial", view, model);
+                const partialResult = await this.renderInternal({ view, model, template: actionResult.template}, viewHelper);
+                return partialResult.page;
             }
         };
 
+        const internal = await this.renderInternal(actionResult, viewHelper);
+        return internal.docType + renderToString(await internal.page);
+    }
 
-
+    private async renderInternal(actionResult: ActionResult, viewHelper: ViewHelper): Promise<{page: Promise<JSX.Element>; docType: string}> {
+        console.log("renderInternal() loading view: " + actionResult.view);
         const view = await this.loadView(actionResult.view);
         const viewResult = view(actionResult.model, viewHelper);
 
+        let docType = "";
+        let page = viewResult.component;
+
         if (viewResult.layout) {
-            console.log("Loading layout: " + viewResult.layout);
+            console.log("renderInternal() loading layout: " + viewResult.layout);
             const layoutFile = await import(this.path + "/" + viewResult.layout);
-            const docType = layoutFile.docType as string || "";
             const layout = layoutFile.default as Layout;
 
-            const page = await layout(viewResult.component, viewHelper);
-            return docType + renderToString(page);
+            docType = layoutFile.docType as string || "";
+            page = layout(page, viewHelper);
         }
-        else {
-            console.log("Displaying partial component");
-            const componentString = renderToString(await viewResult.component);
-            return componentString;
-        }
+
+        return { docType, page };
     }
 }

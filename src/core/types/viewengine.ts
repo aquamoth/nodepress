@@ -20,6 +20,7 @@ export type ViewHelper = {
     publicPath: (path: string) => string;
     templatePath: (path: string) => string;
     action: (route: Route) => Promise<string>;
+    partial: (view: string, model?: {}) => Promise<JSX.Element>;
 }
 
 export type View = (model: {}, helper: ViewHelper) => ViewResult;

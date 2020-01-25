@@ -4,7 +4,7 @@ import { ViewHelper } from "@core/types/viewengine";
 
 export const docType = "<!DOCTYPE html>";
 
-export default async (component: Promise<JSX.Element>, { publicPath, templatePath, action }: ViewHelper) => (
+export default async (component: Promise<JSX.Element>, { publicPath, templatePath, partial }: ViewHelper) => (
     <html dir="ltr" lang="sv-SE">
         <head>
             <script type="text/javascript" async src="https://www.google-analytics.com/analytics.js"></script>
@@ -45,11 +45,11 @@ export default async (component: Promise<JSX.Element>, { publicPath, templatePat
 
 
 
-            <div id="app">{component}</div>
+            <div id="app">{await component}</div>
 
             {/* <script src="/app.bundle.js"></script> */}
 
-            <div dangerouslySetInnerHTML={{ __html: await action({ component: "np-core-page", action: "AdminBar" })}}></div>
+            {await partial("adminbar")}
         </body>
     </html>
 );
