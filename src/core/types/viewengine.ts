@@ -25,8 +25,8 @@ export type ViewHelper = {
 export type View = (model: {}, helper: ViewHelper) => ViewResult;
 
 export interface ViewResult {
-    component: JSX.Element;
+    component: Promise<JSX.Element>;
     layout: string;
 }
 
-export type Layout = (component: JSX.Element, helper: ViewHelper) => Promise<JSX.Element>;
+export type Layout = (component: Promise<JSX.Element>, helper: ViewHelper) => Promise<JSX.Element>;

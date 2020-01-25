@@ -4,7 +4,7 @@ import { ViewHelper } from "@core/types/viewengine";
 
 export const docType = "<!DOCTYPE html>";
 
-export default async (component: JSX.Element, { publicPath, templatePath, action }: ViewHelper) => (
+export default async (component: Promise<JSX.Element>, { publicPath, templatePath, action }: ViewHelper) => (
     <html dir="ltr" lang="sv-SE">
         <head>
             <script type="text/javascript" async src="https://www.google-analytics.com/analytics.js"></script>

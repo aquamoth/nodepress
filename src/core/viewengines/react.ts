@@ -43,7 +43,7 @@ export default class ReactViewEngine implements ViewEngine {
         }
         else {
             console.log("Displaying partial component");
-            const componentString = renderToString(viewResult.component);
+            const componentString = renderToString(await viewResult.component);
             return componentString;
         }
     }
