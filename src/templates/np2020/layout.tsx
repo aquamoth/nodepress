@@ -4,7 +4,7 @@ import { ViewHelper } from "@core/types/viewengine";
 
 export const docType = "<!DOCTYPE html>";
 
-export default (component: JSX.Element, viewHelper: ViewHelper) => (
+export default async (component: JSX.Element, { publicPath, templatePath, action }: ViewHelper) => (
     <html dir="ltr" lang="sv-SE">
         <head>
             <script type="text/javascript" async src="https://www.google-analytics.com/analytics.js"></script>
@@ -13,11 +13,11 @@ export default (component: JSX.Element, viewHelper: ViewHelper) => (
             <title>np2020</title>
             <meta name="referrer" content="always" />
             <link rel="shortcut icon" href="//s.w.org/favicon.ico?2" type="image/x-icon" />
-            <link rel="stylesheet" id="dashicons-css" href={viewHelper.publicPath("css/dashicons.min.css")} type="text/css" media="all" />
-            <link rel="stylesheet" id="admin-bar-css" href={viewHelper.publicPath("css/admin-bar.min.css")} type="text/css" media="all" />
-            <link rel="stylesheet" id="wp-block-library-css" href={viewHelper.publicPath("css/dist/block-library/style.min.css")} type="text/css" media="all" />
+            <link rel="stylesheet" id="dashicons-css" href={publicPath("css/dashicons.min.css")} type="text/css" media="all" />
+            <link rel="stylesheet" id="admin-bar-css" href={publicPath("css/admin-bar.min.css")} type="text/css" media="all" />
+            <link rel="stylesheet" id="wp-block-library-css" href={publicPath("css/dist/block-library/style.min.css")} type="text/css" media="all" />
             <link rel="stylesheet" id="open-sans-css" href="https://fonts.googleapis.com/css?family=Open+Sans%3A300italic%2C400italic%2C600italic%2C300%2C400%2C600&amp;subset=latin%2Clatin-ext&amp;display=fallback&amp;ver=5.4-alpha-47108" type="text/css" media="all" />
-            <link rel='stylesheet' id='wporg-themes-css' href={viewHelper.templatePath("css/style.css")} type='text/css' media='all' />
+            <link rel='stylesheet' id='wporg-themes-css' href={templatePath("css/style.css")} type='text/css' media='all' />
         </head>
 
         <body id="wordpress-org" className="repopackage-template-default single single-repopackage postid-25021 admin-bar no-customize-support modal-open">
@@ -74,7 +74,7 @@ export default (component: JSX.Element, viewHelper: ViewHelper) => (
                         </li>
                     </ul>
                     
-                    
+                    {await action({ component: "page", action: "adminBar" })}
                     
                     <ul id="wp-admin-bar-top-secondary" className="ab-top-secondary ab-top-menu">
                         <li id="wp-admin-bar-search" className="admin-bar-search">

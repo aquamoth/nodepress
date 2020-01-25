@@ -19,6 +19,7 @@ export type Action = (route: Route) => ActionResult;
 export type ViewHelper = {
     publicPath: (path: string) => string;
     templatePath: (path: string) => string;
+    action: (route: Route) => Promise<string>;
 }
 
 export type View = (model: {}, helper: ViewHelper) => ViewResult;
@@ -28,4 +29,4 @@ export interface ViewResult {
     layout: string;
 }
 
-export type Layout = (component: JSX.Element, helper: ViewHelper) => JSX.Element;
+export type Layout = (component: JSX.Element, helper: ViewHelper) => Promise<JSX.Element>;

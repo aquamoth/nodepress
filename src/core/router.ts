@@ -33,27 +33,40 @@ export default class Router {
         }
     }
 
+    public async renderAction(req: Request, route: Route): Promise<string> {
+        if (!route) {
+            console.warn("renderAction() ignores undefined route.");
+            return Promise.resolve(undefined);
+        }
+
+        //console.log("Searching for component", route.component);
+        const action = this.findAction(req, route);
+        if (!action) {
+            console.warn("renderAction() ignores route to invalid action.");
+            return Promise.resolve(undefined);
+        }
+
+        console.log("renderAction() calling action", route.component, route.action);
+        const actionResult = action(route);
+
+        console.log("renderAction() calling viewEngine.render()");
+        const viewEngine = new ViewEngine(this, actionResult.template);
+        return await viewEngine.render(actionResult);
+   }
+
     public async middleware (req: Request, res: Response, next: Function) {
         console.log("Router middleware called for", req.url);
 
         const route = this.buildRoute(req.url);
-        if (route) {            
-            //console.log("Searching for component", route.component);
-            const action = this.findAction(req, route);
+        const html = await this.renderAction(req, route);
 
-            if (action) {
-                //console.log("Calling action in route", route);
-                const actionResult = action(route);
-
-                const viewEngine = new ViewEngine(actionResult.template);
-                const html = await viewEngine.render(actionResult);
-                res.writeHead(200, { "Content-Type": "text/html" });
-                res.end(html);
-                return;
-            }
+        if (html !== undefined){
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end(html);
         }
-
-        next();
+        else {
+            next();
+        }
     }
 
     private buildRoute(url: string): Route {

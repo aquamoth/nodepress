@@ -1,10 +1,13 @@
 import { renderToString } from "react-dom/server";
 import { ViewEngine, ActionResult, View, Layout, ViewHelper } from "@core/types/viewengine";
+import Router from "@core/router";
 
 export default class ReactViewEngine implements ViewEngine {
+    private readonly router: Router;
     private readonly path: string;
 
-    constructor(templateName: string) {
+    constructor(router: Router, templateName: string) {
+        this.router = router;
         this.path = `../../templates/${templateName}`;
     }
 
@@ -13,11 +16,15 @@ export default class ReactViewEngine implements ViewEngine {
         return viewFile.default as View;
     }
 
-    public async render(actionResult: ActionResult) {
+    public async render(actionResult: ActionResult): Promise<string> {
 
         const viewHelper: ViewHelper = {
             publicPath: (path: string) => `/public/${path}`,
-            templatePath: (path: string) => `/templates/${actionResult.template}/${path}`
+            templatePath: (path: string) => `/templates/${actionResult.template}/${path}`,
+            action: async (route: Route) => {
+                console.warn("React viewEngine requested to execute route", route);
+                return await this.router.renderAction(null, route);
+            }
         };
 
 
@@ -31,7 +38,7 @@ export default class ReactViewEngine implements ViewEngine {
             const docType = layoutFile.docType as string || "";
             const layout = layoutFile.default as Layout;
 
-            const page = layout(viewResult.component, viewHelper);
+            const page = await layout(viewResult.component, viewHelper);
             return docType + renderToString(page);
         }
         else {
