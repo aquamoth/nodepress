@@ -1,5 +1,5 @@
 import { renderToString } from "react-dom/server";
-import { ViewEngine, ActionResult, View, Layout } from "@core/types/viewengine";
+import { ViewEngine, ActionResult, View, Layout, ViewHelper } from "@core/types/viewengine";
 
 export default class ReactViewEngine implements ViewEngine {
     private readonly path: string;
@@ -14,15 +14,24 @@ export default class ReactViewEngine implements ViewEngine {
     }
 
     public async render(actionResult: ActionResult) {
+
+        const viewHelper: ViewHelper = {
+            publicPath: (path: string) => `/public/${path}`,
+            templatePath: (path: string) => `/templates/${actionResult.template}/${path}`
+        };
+
+
+
         const view = await this.loadView(actionResult.view);
-        const viewResult = view(actionResult.model);
+        const viewResult = view(actionResult.model, viewHelper);
 
         if (viewResult.layout) {
             console.log("Loading layout: " + viewResult.layout);
             const layoutFile = await import(this.path + "/" + viewResult.layout);
-            const layout = layoutFile.default as Layout;
             const docType = layoutFile.docType as string || "";
-            const page = layout(viewResult.component);
+            const layout = layoutFile.default as Layout;
+
+            const page = layout(viewResult.component, viewHelper);
             return docType + renderToString(page);
         }
         else {

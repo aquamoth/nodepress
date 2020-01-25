@@ -37,27 +37,32 @@ export default class Router {
         console.log("Router middleware called for", req.url);
 
         const route = this.buildRoute(req.url);
-        //console.log("Searching for component", route.component);
+        if (route) {            
+            //console.log("Searching for component", route.component);
+            const action = this.findAction(req, route);
 
-        const action = this.findAction(req, route);
+            if (action) {
+                //console.log("Calling action in route", route);
+                const actionResult = action(route);
 
-        if (action){
-            //console.log("Calling action in route", route);
-            const actionResult = action(route);
-
-            const viewEngine = new ViewEngine(actionResult.template);
-            const html = await viewEngine.render(actionResult);
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(html);
+                const viewEngine = new ViewEngine(actionResult.template);
+                const html = await viewEngine.render(actionResult);
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.end(html);
+                return;
+            }
         }
-        else {
-            console.warn("Router could not find the requested component", route);
-            next();
-        }
+
+        next();
     }
 
     private buildRoute(url: string): Route {
+
         //TODO: Properly decode url to Route!
+
+        if (url !== "/")
+            return null;
+
         return {
             component: "np-core-page",
             action: "Index",

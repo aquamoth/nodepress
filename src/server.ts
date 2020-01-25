@@ -16,6 +16,7 @@ app.set("port", process.env.PORT || 3000);
 // app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/public", express.static("dist/public"));
+app.use("/templates", express.static("dist/templates"));
 
 //register components with routes
 const db = new Database();

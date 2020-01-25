@@ -16,11 +16,16 @@ export interface ActionResult {
 
 export type Action = (route: Route) => ActionResult;
 
-export type View = (model: {}) => ViewResult;
+export type ViewHelper = {
+    publicPath: (path: string) => string;
+    templatePath: (path: string) => string;
+}
+
+export type View = (model: {}, helper: ViewHelper) => ViewResult;
 
 export interface ViewResult {
     component: JSX.Element;
     layout: string;
 }
 
-export type Layout = (component: JSX.Element) => JSX.Element;
+export type Layout = (component: JSX.Element, helper: ViewHelper) => JSX.Element;
