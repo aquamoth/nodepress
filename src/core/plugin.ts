@@ -5,5 +5,7 @@ export default class Plugin {
     public request: Request;
     public route: Route;
     
-    execute: (model: {}) => Promise<PluginResult>;
+    public execute(model: {}): Promise<PluginResult> {
+        throw Error("Abstract method must be overridden.");
+    }
 }

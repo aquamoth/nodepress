@@ -93,7 +93,7 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
         return layout;
     }
 
-    public async renderModule(name: string, parameters: {}): Promise<string> {
+    public async renderModule(name: string, parameters: {}) {
         console.log("RequestPipline rendering module", name);
         const plugin = this.router.initializePlugin(name);
         if (!plugin) {
@@ -105,13 +105,10 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
         plugin.request = this.request;
         plugin.route = this.route;
         const moduleResult = await plugin.execute(parameters);
+        const viewName = `plugins/${name}/${moduleResult.view}`;
+        const model = moduleResult.model;
 
-        const view = await this.loadView(moduleResult.view);
-
-        console.log("RequestPipeline calling viewEngine.render()");
-        const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
-        const viewResult = await viewEngine.render(view, moduleResult.model);
-        return viewEngine.toString(viewResult);
+        return await this.renderPartial(viewName, model);
     }
 
     public async renderPartial(viewName: string, model?: {}) {

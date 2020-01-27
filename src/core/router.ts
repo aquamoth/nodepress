@@ -16,14 +16,14 @@ export default class Router {
         console.log("Router.ctor");        
         
         const componentNames = ["np-core-page"]; //TODO: Load from database
-        const moduleNames = ["np-core-menu"]; //TODO: Load from database
+        const pluginNames = ["np-core-menu"]; //TODO: Load from database
 
         const componentTask = this.importComponents(componentNames);
-        const moduleTask = this.importModules(moduleNames);
+        const pluginTask = this.importPlugins(pluginNames);
 
-        Promise.all([componentTask, moduleTask])
+        Promise.all([componentTask, pluginTask])
             .then(()=>{
-                console.log("Router constructed");        
+                console.log("Router is ready.");        
             });
     }
 
@@ -42,17 +42,17 @@ export default class Router {
         }
     }
 
-    private async importModules(moduleNames: string[]){
+    private async importPlugins(pluginNames: string[]){
         this.plugins = {};
         
-        for (const name of moduleNames){
+        for (const name of pluginNames){
             try {
-                console.log("Importing module", name);
-                const module = await import(`../modules/${name}/index`);
-                const moduleClass = module.default as Constructor<Plugin>;
-                this.plugins[name] = moduleClass;
+                console.log("Importing plugin", name);
+                const plugin = await import(`../plugins/${name}/index`);
+                const pluginClass = plugin.default as Constructor<Plugin>;
+                this.plugins[name] = pluginClass;
             } catch (error) {
-                console.error("Could not import module", name, error);
+                console.error("Could not import plugin", name, error);
             }
         }
     }

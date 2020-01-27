@@ -3,8 +3,8 @@ import Plugin from "../../core/plugin";
 
 export default class Menu extends Plugin
 {
-    public Index(model: {}): PluginResult {
+    public execute(model: {}): Promise<PluginResult> {
         console.log("np-core-menu.Index()", model);
-        return { view: "index", model };
+        return Promise.resolve({ view: "index", model });
     }
 }
