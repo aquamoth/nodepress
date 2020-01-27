@@ -4,7 +4,6 @@ import RequestPipeline from "../../core/requestpipeline";
 import { Layout, ViewResult } from "../../core/types/viewengine";
 
 async function MyLayout(component: Promise<JSX.Element>, pipeline: RequestPipeline) {
-    console.log("layout.tsx executing!");
     return {
         docType: "<!DOCTYPE html>",
         component: Promise.resolve(
@@ -33,7 +32,7 @@ async function MyLayout(component: Promise<JSX.Element>, pipeline: RequestPipeli
 
 
 
-                            {/* {await pipeline.renderModule("menu", {name: "wporg-header-menu"})} */}
+                            {await pipeline.renderModule("menu", {name: "wporg-header-menu"})}
                             <button id="mobile-menu-button" aria-expanded="false"><span className="screen-reader-text">Toggle Menu</span></button>
                             <ul id="wporg-header-menu" className="menu nav-menu"><li id="menu-item-251" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-251"><a href="https://sv.wordpress.org/">Hem</a></li>
                                 <li id="menu-item-587" className="menu-item menu-item-type-post_type menu-item-object-page current-menu-item menu-item-587"><a href="https://sv.wordpress.org/themes/">Teman</a></li>
@@ -56,7 +55,7 @@ async function MyLayout(component: Promise<JSX.Element>, pipeline: RequestPipeli
 
                     {/* <script src="/app.bundle.js"></script> */}
 
-                    {/* {await pipeline.renderPartial("adminbar")} */}
+                    {await pipeline.renderPartial("adminbar")}
                 </body>
             </html>
         )

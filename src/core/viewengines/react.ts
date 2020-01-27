@@ -1,7 +1,7 @@
 // import * as React from "react";
 // import { Request } from "express";
 import { renderToString } from "react-dom/server";
-import { /*ViewEngine,*/ View } from "../types/viewengine";
+import { /*ViewEngine,*/ View, ViewResult } from "../types/viewengine";
 // import Router from "../router";
 // import { PluginResult } from "../types/pluginresult";
 import RequestPipeline from "../requestpipeline";
@@ -14,29 +14,21 @@ export default class ReactViewEngine /*implements ViewEngine*/ {
         this.pipeline = pipeline;
     }
 
-    public async render(view: View, model: {}): Promise<{docType: string; page: JSX.Element}> {
+    public async render(view: View, model: {}): Promise<ViewResult> {
 
         console.log("react viewengine rendering view");
-        const viewResult = view(model, this.pipeline);
+        let viewResult = view(model, this.pipeline);
 
-        if (viewResult.layout) {
-            console.log("react viewengine asking pipeline to load layout", viewResult.layout);
+        if (viewResult.layout) { //TODO: while()!
+            console.log("react viewengine wrapping component in", viewResult.layout);
             const layout = await this.pipeline.loadLayout(viewResult.layout);
-
-            console.log("react viewengine calling layout for the component");
-            const layoutResult = await layout(viewResult.component, this.pipeline);
-            console.log("react viewengine received layoutResult", layoutResult);
-
-            const docType = layoutResult.docType || "";//TODO: layout.docType as string || "";
-            const page = await layoutResult.component;
-            return {docType, page};
+            // console.log("react viewengine calling layout for the component");
+            const layoutResult: ViewResult = await layout(viewResult.component, this.pipeline);
+            // console.log("react viewengine received layoutResult", layoutResult);
+            viewResult = layoutResult;
         }
-        else {
-            console.log("react viewengine returning component ViewResult");
-            const docType  = viewResult.docType;
-            const page = await viewResult.component;
-            return {docType, page};
-        }
+
+        return viewResult;
     }
 
     public async toString(docType: string, page: JSX.Element) {

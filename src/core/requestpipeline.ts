@@ -75,7 +75,7 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
         console.log("renderAction viewEngineResult", viewEngineResult);
         
         console.log("renderAction() calling viewEngine.toString()");
-        const html = await viewEngine.toString(viewEngineResult.docType, viewEngineResult.page);
+        const html = await viewEngine.toString(viewEngineResult.docType || "", await viewEngineResult.component);
         console.log("renderAction() returning html promise",);
         return html;
     }
@@ -114,17 +114,17 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
         console.log("RequestPipline calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
         const viewEngineResult = await viewEngine.render(view, moduleResult.model);
-        return viewEngine.toString(viewEngineResult.docType, viewEngineResult.page);
+        return viewEngine.toString(viewEngineResult.docType || "", await viewEngineResult.component);
     }
 
     public async renderPartial(viewName: string, model?: {}) {
-        console.warn("RequestPipline renderPartial()", viewName, model);
+        console.warn("RequestPipeline renderPartial()", viewName, model);
         const view = await this.loadView(viewName);
 
-        console.log("RequestPipline calling viewEngine.render()");
+        console.log("RequestPipeline calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
         const viewEngineResult = await viewEngine.render(view, model);
-        return viewEngineResult.page;
+        return await viewEngineResult.component;
     }
 
 
