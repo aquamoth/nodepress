@@ -1,75 +1,79 @@
 import { Request, Response } from "express";
-import { Component, Database, Action } from "./types";
-import ViewEngine from "./viewengines/react";
+import Component from "./component";
+import Database from "./database";
+import RequestPipeline from "./requestpipeline";
+import Plugin from "./plugin";
+import { PluginResult } from "./types/pluginresult";
 
-type ComponentClass = { new(): Component };
+type Constructor<T> = { new(): T };
+type Dictionary<T> = {[name: string]: { new(): T }};
 
 export default class Router {
-    private components: {[name: string]: ComponentClass};
+    private components: Dictionary<Component>;// {[name: string]: ComponentClass};
+    private plugins: Dictionary<Plugin>;// {[name: string]: ModuleClass};
     
     constructor(db: Database) {
         console.log("Router.ctor");        
         
         const componentNames = ["np-core-page"]; //TODO: Load from database
+        const moduleNames = ["np-core-menu"]; //TODO: Load from database
 
-        this.importComponents(componentNames).then(()=>{
-            console.log("Router constructed");        
-        });
+        const componentTask = this.importComponents(componentNames);
+        const moduleTask = this.importModules(moduleNames);
+
+        Promise.all([componentTask, moduleTask])
+            .then(()=>{
+                console.log("Router constructed");        
+            });
     }
 
     private async importComponents(componentNames: string[]){
-
         this.components = {};
         
         for (const name of componentNames){
             try {
                 console.log("Importing component", name);
                 const module = await import("../components/" + name);
-                const componentClass = module.default as ComponentClass;
+                const componentClass = module.default as Constructor<Component>;
                 this.components[name] = componentClass;
             } catch (error) {
-                console.warn("Could not import component", name);
+                console.error("Could not import component", name, error);
             }
         }
     }
 
-    public async renderAction(request: Request, route: Route): Promise<string> {
-        if (!route) {
-            console.warn("renderAction() ignores undefined route.");
-            return Promise.resolve(undefined);
+    private async importModules(moduleNames: string[]){
+        this.plugins = {};
+        
+        for (const name of moduleNames){
+            try {
+                console.log("Importing module", name);
+                const module = await import(`../modules/${name}/index`);
+                const moduleClass = module.default as Constructor<Plugin>;
+                this.plugins[name] = moduleClass;
+            } catch (error) {
+                console.error("Could not import module", name, error);
+            }
         }
-
-        //console.log("Searching for component", route.component);
-        const action = this.findAction(request, route);
-        if (!action) {
-            console.warn("renderAction() ignores route to invalid action.");
-            return Promise.resolve(undefined);
-        }
-
-        console.log("renderAction() calling action", route.component, route.action);
-        const actionResult = action(route.parameters);
-
-        console.log("renderAction() calling viewEngine.render()");
-        const viewEngine = new ViewEngine(this, request, actionResult.template);
-        return await viewEngine.render(actionResult);
-   }
+    }
 
     public async middleware (req: Request, res: Response, next: Function) {
         console.log("Router middleware called for", req.url);
 
-        const route = this.buildRoute(req.url);
-        const html = await this.renderAction(req, route);
+        const pipeline = new RequestPipeline(this, req);
+        const response = await pipeline.process();
 
-        if (html !== undefined){
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(html);
+        if (response) {
+            res.writeHead(response.statusCode, response.reasonPhrase, response.headers);
+            res.end(response.content);
         }
         else {
             next();
         }
     }
 
-    private buildRoute(url: string): Route {
+
+    public buildRoute(url: string): Route {
 
         //TODO: Properly decode url to Route!
 
@@ -83,16 +87,21 @@ export default class Router {
         };
     }
 
-    private findAction(request: Request, route: Route): Action {
-        if (!this.components.hasOwnProperty(route.component))
+    public initializeComponent(componentName: string): Component {
+        if (!this.components.hasOwnProperty(componentName))
             return null;
 
-        //console.log(`Searching component ${route.component} for action ${route.action}`);
-        const componentClass = this.components[route.component];
+        const componentClass = this.components[componentName];
         const component = new componentClass();
-        component.request = request;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const action = (component as any)[route.action].bind(component) as Action;
-        return action;
+        return component;
+    }
+
+    public initializePlugin(name: string): Plugin {
+        if (!this.plugins.hasOwnProperty(name))
+            return null;
+
+        const pluginClass = this.plugins[name];
+        const plugin = new pluginClass();
+        return plugin;
     }
 }

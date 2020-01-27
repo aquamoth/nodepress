@@ -1,4 +1,4 @@
-import { Component } from "../../core/types";
+import Component from "@core/component";
 import { Request, Response } from "express";
 import { ActionResult } from "@core/types/viewengine";
 //const pkg = require("../../../package.json");

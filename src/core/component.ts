@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { ActionResult } from "./viewengine";
+import { ActionResult } from "./types/viewengine";
 
 export default class Component {
     public request: Request;

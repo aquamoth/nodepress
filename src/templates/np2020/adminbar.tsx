@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from "react";
-import { ViewHelper } from "@core/types/viewengine";
+import RequestPipeline from "@core/requestpipeline";
 
-export default (model: {}, viewHelper: ViewHelper) => ({
+export default (model: {}, pipeline: RequestPipeline) => ({
     component: (<>
         <div id="wpadminbar" className="nojq">
             <a className="screen-reader-shortcut" href="#wp-toolbar" tabIndex={1}>Hoppa till verktygsfältet</a>

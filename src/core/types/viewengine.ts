@@ -1,33 +1,26 @@
-import {Request, Response} from "express";
+import RequestPipeline from "@core/requestpipeline";
+import { PluginResult } from "./pluginresult";
 
-export interface ViewEngineConstructor {
-    new (templateName: string): ViewEngine;
-}
+// export interface ViewEngineConstructor {
+//     new (templateName: string): ViewEngine;
+// }
 
 export interface ViewEngine {
-    render(actionResult: ActionResult): Promise<string>;
+    render(view: View, model: {}): Promise<string>;
 }
 
-export interface ActionResult {
-    model: object;
+export interface ActionResult extends PluginResult {
     template: string;
-    view: string;
 }
 
 export type Action = (model: {}) => ActionResult;
 
-export type ViewHelper = {
-    publicPath: (path: string) => string;
-    templatePath: (path: string) => string;
-    action: (route: Route) => Promise<string>;
-    partial: (view: string, model?: {}) => Promise<JSX.Element>;
-}
-
-export type View = (model: {}, helper: ViewHelper) => ViewResult;
+export type View = (model: {}, pipeline: RequestPipeline) => ViewResult;
 
 export interface ViewResult {
     component: Promise<JSX.Element>;
-    layout: string;
+    layout?: string;
+    docType?: string;
 }
 
-export type Layout = (component: Promise<JSX.Element>, helper: ViewHelper) => Promise<JSX.Element>;
+export type Layout = (component: Promise<JSX.Element>, pipeline: RequestPipeline) => Promise<JSX.Element>;
