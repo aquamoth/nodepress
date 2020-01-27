@@ -1,10 +1,10 @@
-import * as React from "react";
-import { Request } from "express";
+// import * as React from "react";
+// import { Request } from "express";
 import { renderToString } from "react-dom/server";
-import { ViewEngine, View } from "@core/types/viewengine";
-import Router from "@core/router";
-import { PluginResult } from "@core/types/pluginresult";
-import RequestPipeline from "@core/requestpipeline";
+import { /*ViewEngine,*/ View } from "../types/viewengine";
+// import Router from "../router";
+// import { PluginResult } from "../types/pluginresult";
+import RequestPipeline from "../requestpipeline";
 
 export default class ReactViewEngine /*implements ViewEngine*/ {
 
@@ -16,18 +16,25 @@ export default class ReactViewEngine /*implements ViewEngine*/ {
 
     public async render(view: View, model: {}): Promise<{docType: string; page: JSX.Element}> {
 
+        console.log("react viewengine rendering view");
         const viewResult = view(model, this.pipeline);
 
         if (viewResult.layout) {
+            console.log("react viewengine asking pipeline to load layout", viewResult.layout);
             const layout = await this.pipeline.loadLayout(viewResult.layout);
 
-            const page = await layout(viewResult.component, this.pipeline);
-            const docType = "";//TODO: layout.docType as string || "";
+            console.log("react viewengine calling layout for the component");
+            const layoutResult = await layout(viewResult.component, this.pipeline);
+            console.log("react viewengine received layoutResult", layoutResult);
+
+            const docType = layoutResult.docType || "";//TODO: layout.docType as string || "";
+            const page = await layoutResult.component;
             return {docType, page};
         }
         else {
-            const page = await viewResult.component;
+            console.log("react viewengine returning component ViewResult");
             const docType  = viewResult.docType;
+            const page = await viewResult.component;
             return {docType, page};
         }
     }

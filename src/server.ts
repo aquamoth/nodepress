@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as dotenv from "dotenv";
 
-import Database from "@core/database";
+import Database from "./core/database";
 import Router from "./core/router";
 
 // import * as bodyParser from 'body-parser';

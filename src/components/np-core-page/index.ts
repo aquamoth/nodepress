@@ -1,6 +1,6 @@
-import Component from "@core/component";
-import { Request, Response } from "express";
-import { ActionResult } from "@core/types/viewengine";
+import Component from "../../core/component";
+//import { Request, Response } from "express";
+import { ActionResult } from "../../core/types/viewengine";
 //const pkg = require("../../../package.json");
 
 export default class Page extends Component

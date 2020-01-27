@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from "react";
-import RequestPipeline from "@core/requestpipeline";
+import RequestPipeline from "../../core/requestpipeline";
 
 export default (model: {}, pipeline: RequestPipeline) => ({
     component: (<>

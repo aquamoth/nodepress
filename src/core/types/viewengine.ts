@@ -1,4 +1,4 @@
-import RequestPipeline from "@core/requestpipeline";
+import RequestPipeline from "../../core/requestpipeline";
 import { PluginResult } from "./pluginresult";
 
 // export interface ViewEngineConstructor {
@@ -23,4 +23,4 @@ export interface ViewResult {
     docType?: string;
 }
 
-export type Layout = (component: Promise<JSX.Element>, pipeline: RequestPipeline) => Promise<JSX.Element>;
+export type Layout = (component: Promise<JSX.Element>, pipeline: RequestPipeline) => Promise<ViewResult>;

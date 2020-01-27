@@ -6,7 +6,7 @@ import { Layout, View } from "./types/viewengine";
 import { PipelineResponse } from "./types/pipelineresponse";
 
 export default class RequestPipelineClass /*implements RequestPipeline*/ {
-    private static TEMPLATES_PATH = "../../templates";
+    private static TEMPLATES_PATH = "../templates";
 
     private readonly router: Router;
     private readonly request: Request;
@@ -33,6 +33,7 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
 
         
         const html = await this.renderAction();
+        console.log("RequestPipeline received html", html.length);
 
         if (html !== undefined){
             return {
@@ -47,6 +48,7 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
     }    
 
     protected async renderAction(): Promise<string> {
+        console.log("RequestPipeline.renderAction()");
         const route = this.route;
 
         //console.log("Searching for component", route.component);
@@ -57,10 +59,11 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
             console.warn("renderAction() ignores route to invalid action.");
             return Promise.resolve(undefined);
         }
-
         console.log("renderAction() calling action", route.component, route.action);
         component.request = this.request;
         const actionResult = action(route.parameters);
+        console.log("renderAction executed action", actionResult);
+
         this.templateName = actionResult.template;
 
         console.log("renderInternal() loading view: " + actionResult.view);
@@ -69,7 +72,12 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
         console.log("renderAction() calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
         const viewEngineResult = await viewEngine.render(view, actionResult.model);
-        return viewEngine.toString(viewEngineResult.docType, viewEngineResult.page);
+        console.log("renderAction viewEngineResult", viewEngineResult);
+        
+        console.log("renderAction() calling viewEngine.toString()");
+        const html = await viewEngine.toString(viewEngineResult.docType, viewEngineResult.page);
+        console.log("renderAction() returning html promise",);
+        return html;
     }
 
     private async loadView(viewName: string) {
@@ -81,8 +89,8 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
     }
 
     public async loadLayout(layoutName: string) {
-        console.log("RequestPipeline loading layout: " + layoutName);
         const path = `${RequestPipelineClass.TEMPLATES_PATH}/${this.templateName}/${layoutName}`;
+        console.log("RequestPipeline loading layout", path);
         const layoutFile = await import(path);
         const layout = layoutFile.default as Layout;
         return layout;
@@ -121,7 +129,10 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
 
 
     public publicPath(path: string) { return `/public/${path}`; }
-    public templatePath(path: string) { return `/templates/${this.templateName}/${path}`; }
+    public templatePath(path: string) {
+        console.log("RequestPipeline.templatePath()", path);
+         return `/templates/${this.templateName}/${path}`; 
+    }
 }
 
 

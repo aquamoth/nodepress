@@ -1,5 +1,5 @@
-import { PluginResult } from "@core/types/pluginresult";
-import Plugin from "@core/plugin";
+import { PluginResult } from "../../core/types/pluginresult";
+import Plugin from "../../core/plugin";
 
 export default class Menu extends Plugin
 {
