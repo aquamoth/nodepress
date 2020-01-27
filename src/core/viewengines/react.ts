@@ -15,7 +15,6 @@ export default class ReactViewEngine /*implements ViewEngine*/ {
     }
 
     public async render(view: View, model: {}): Promise<ViewResult> {
-
         console.log("react viewengine rendering view");
         let viewResult = view(model, this.pipeline);
 
@@ -31,8 +30,10 @@ export default class ReactViewEngine /*implements ViewEngine*/ {
         return viewResult;
     }
 
-    public async toString(docType: string, page: JSX.Element) {
-        return docType + renderToString(page);
+    public async toString(viewResult: ViewResult) {
+        const docType = viewResult.docType || "";
+        const component = await viewResult.component;
+        return docType + renderToString(component);
     }
 
     // public async renderModule(moduleResult: ModuleResult): Promise<string> {

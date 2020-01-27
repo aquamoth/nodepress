@@ -71,12 +71,9 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
 
         console.log("renderAction() calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
-        const viewEngineResult = await viewEngine.render(view, actionResult.model);
-        console.log("renderAction viewEngineResult", viewEngineResult);
-        
-        console.log("renderAction() calling viewEngine.toString()");
-        const html = await viewEngine.toString(viewEngineResult.docType || "", await viewEngineResult.component);
-        console.log("renderAction() returning html promise",);
+        const viewResult = await viewEngine.render(view, actionResult.model);
+        const html = await viewEngine.toString(viewResult);
+        console.log("renderAction() returning html; size=", html.length);
         return html;
     }
 
@@ -111,10 +108,10 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
 
         const view = await this.loadView(moduleResult.view);
 
-        console.log("RequestPipline calling viewEngine.render()");
+        console.log("RequestPipeline calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
-        const viewEngineResult = await viewEngine.render(view, moduleResult.model);
-        return viewEngine.toString(viewEngineResult.docType || "", await viewEngineResult.component);
+        const viewResult = await viewEngine.render(view, moduleResult.model);
+        return viewEngine.toString(viewResult);
     }
 
     public async renderPartial(viewName: string, model?: {}) {
@@ -123,8 +120,8 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
 
         console.log("RequestPipeline calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
-        const viewEngineResult = await viewEngine.render(view, model);
-        return await viewEngineResult.component;
+        const viewResult = await viewEngine.render(view, model);
+        return await viewResult.component;
     }
 
 
