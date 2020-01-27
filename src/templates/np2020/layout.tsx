@@ -29,7 +29,7 @@ async function MyLayout(component: Promise<JSX.Element>, pipeline: RequestPipeli
                             <h1><a href="https://sv.wordpress.org/">WordPress.org</a></h1>
                             <h2 className="rosetta"><a href="https://sv.wordpress.org/">Svenska</a></h2>				    
                             <div style={{clear:"both"}}></div>
-                            {await pipeline.renderModule("np-core-menu", {name: "wporg-header-menu"})}
+                            {await pipeline.renderPlugin("np-core-menu", {name: "wporg-header-menu"})}
                             <div style={{clear: "both"}}></div>
                         </div>
                     </div>

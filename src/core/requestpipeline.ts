@@ -93,21 +93,25 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
         return layout;
     }
 
-    public async renderModule(name: string, parameters: {}) {
-        console.log("RequestPipline rendering module", name);
+    public async renderPlugin(name: string, parameters: {}) {
+        console.log("RequestPipeline rendering plugin", name);
         const plugin = this.router.initializePlugin(name);
         if (!plugin) {
-            console.warn("RequestPipline ignores missing module.");
+            console.warn("RequestPipeline ignores missing plugin.");
             return Promise.resolve(undefined);
         }
 
-        console.log("RequestPipline executing module", parameters);
+        console.log("RequestPipeline executing plugin", parameters);
         plugin.request = this.request;
         plugin.route = this.route;
-        const moduleResult = await plugin.execute(parameters);
-        const viewName = `plugins/${name}/${moduleResult.view}`;
-        const model = moduleResult.model;
+        const pluginResult = await plugin.execute(parameters);
+        if (!pluginResult) {
+            console.warn("Plugin did not return a valid result. Not rendering it!");
+            return undefined;
+        }
 
+        const viewName = `plugins/${name}/${pluginResult.view}`;
+        const model = pluginResult.model;
         return await this.renderPartial(viewName, model);
     }
 
