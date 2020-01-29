@@ -3,17 +3,17 @@ import * as React from "react";
 import RequestPipeline from "../../core/requestpipeline";
 import { ViewResult } from "../../core/types/viewengine";
 
-export default async (model: {}, pipeline: RequestPipeline) => ({
+interface PageInfo {
+    title: string; 
+    description: string;
+}
+
+export default async (model: PageInfo, pipeline: RequestPipeline) => ({
     component: Promise.resolve(<>
         <header id="masthead" className="site-header home" role="banner">
 			<div className="site-branding">
-                <h1 className="site-title">
-                    <a href={pipeline.canonicalUrl()} rel="home">WordPress-support</a>
-                </h1>
-
-                <p className="site-description">
-                    Vi har en mängd olika resurser som hjälper dig att få ut så mycket som möjligt av WordPress.					
-                </p>
+                <h1 className="site-title"><a href={pipeline.canonicalUrl()} rel="home">{model.title}</a></h1>
+                <p className="site-description">{model.description}</p>
                 <form role="search" method="get" className="search-form" action="https://sv.wordpress.org/support/search/">
                     <label htmlFor="s" className="screen-reader-text">Sök efter:</label>
                     <input type="hidden" name="action" value="bbp-search-request" onChange={()=>null}/>

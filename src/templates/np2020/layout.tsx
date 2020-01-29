@@ -48,21 +48,13 @@ async function MyLayout(component: Promise<JSX.Element>, pipeline: RequestPipeli
                 </head>
 
                 <body id="wordpress-org" className="repopackage-template-default single single-repopackage postid-25021 admin-bar no-customize-support modal-open">
-                    <div id="wporg-header">
-                        <div className="wrapper">
-                            <a className="skip-link screen-reader-text" href="#themes">Gå till innehållet</a>	
-                            <h1><a href="https://sv.wordpress.org/">WordPress.org</a></h1>
-                            <h2 className="rosetta"><a href="https://sv.wordpress.org/">Svenska</a></h2>				    
-                            <div style={{clear:"both"}}></div>
-                            {await pipeline.renderPlugin("np-core-menu", {name: "wporg-header-menu"})}
-                            <div style={{clear: "both"}}></div>
-                        </div>
-                    </div>
+                    {await pipeline.renderPartial("header")}
 
 
                     {await component}
 
 
+                    {await pipeline.renderPartial("footer")}
                     {await pipeline.renderPartial("adminbar", {showSecondary: true})}
 
                     {/* <script src="/app.bundle.js"></script> */}

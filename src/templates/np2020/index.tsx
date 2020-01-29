@@ -3,12 +3,16 @@ import * as React from "react";
 import RequestPipeline from "../../core/requestpipeline";
 import { ViewResult } from "../../core/types/viewengine";
 
-export default async (model: {}, pipeline: RequestPipeline) => ({
+interface PageInfo {
+    title: string; 
+    description: string;
+    content: string;
+}
+
+export default async (model: PageInfo, pipeline: RequestPipeline) => ({
     layout: "layout",
     component: Promise.resolve(<>
-        {await pipeline.renderPartial("hero")}
-    
-        <h1>Test View!</h1>
-        <p>This is a template that implements React render engine.</p>
+        {await pipeline.renderPartial("hero", model)}
+        <main id="main" className="site-main " role="main" dangerouslySetInnerHTML={{__html: model.content}} />
     </>)
 }) as ViewResult;
