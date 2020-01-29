@@ -11,24 +11,24 @@ export default class Page extends Component
         const viewModel = {title: "", description: "", content: ""};
 
         switch (model.page) {
-            case 251: 
+            case 251: //homepage
                 viewModel.title = "Lär känna WordPress";
                 viewModel.description = "WordPress är programvara med öppen källkod som du kan använda för att skapa en vacker webbplats, blogg eller app.";
+                viewModel.content = this.htmlForPage251();
+                break; 
+            case 858: //support
+                viewModel.title = "WordPress-support";
+                viewModel.description = "Vi har en mängd olika resurser som hjälper dig att få ut så mycket som möjligt av WordPress.";
                 viewModel.content = "";
-                break; //homepage
-            case 858: 
-            viewModel.title = "WordPress-support";
-            viewModel.description = "Vi har en mängd olika resurser som hjälper dig att få ut så mycket som möjligt av WordPress.";
-            viewModel.content = this.htmlForPage858();
-            break; //support
-            case 689: 
-                break; //news
+                break; 
+            case 689: //news
+                break; 
         }
 
         return this.View(viewModel, "index");
     }
 
-    private htmlForPage858(){
+    private htmlForPage251(){
         return `
 		<div class="home-welcome">
 			<div id="lang-guess-wrap"></div>
