@@ -1,9 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from "react";
 import RequestPipeline from "../../core/requestpipeline";
+import { ViewResult } from "../../core/types/viewengine";
 
-export default (model: {}, pipeline: RequestPipeline) => ({
-    component: (<>
+export default async (model: { showSecondary: boolean }, pipeline: RequestPipeline) => ({
+    component: Promise.resolve(<>
         <div id="wpadminbar" className="nojq">
             <a className="screen-reader-shortcut" href="#wp-toolbar" tabIndex={1}>Hoppa till verktygsfältet</a>
             <div className="quicklinks" id="wp-toolbar" role="navigation" aria-label="Verktygsfält">
@@ -26,21 +27,23 @@ export default (model: {}, pipeline: RequestPipeline) => ({
                         </div>
                     </li>
                 </ul>
-                
-                <ul id="wp-admin-bar-top-secondary" className="ab-top-secondary ab-top-menu">
-                    <li id="wp-admin-bar-search" className="admin-bar-search">
-                        <div className="ab-item ab-empty-item" tabIndex={-1}>
-                            <form action="https://sv.wordpress.org/themes/" method="get" id="adminbarsearch">
-                                <input className="adminbar-input" name="s" id="adminbar-search" type="text" value="" maxLength={150} />
-                                <label htmlFor="adminbar-search" className="screen-reader-text">Sök</label>
-                                <input type="submit" className="adminbar-button" value="Sök" />
-                            </form>
-                        </div>
-                    </li>
-                    <li id="wp-admin-bar-log-in"><a className="ab-item" href="https://login.wordpress.org/?locale=sv_SE">Logga in</a></li>
-                    <li id="wp-admin-bar-register"><a className="ab-item" href="https://login.wordpress.org/register?locale=sv_SE">Registrera</a></li>
-                </ul>			
+
+                {model.showSecondary ? (
+                    <ul id="wp-admin-bar-top-secondary" className="ab-top-secondary ab-top-menu">
+                        <li id="wp-admin-bar-search" className="admin-bar-search">
+                            <div className="ab-item ab-empty-item" tabIndex={-1}>
+                                <form action={pipeline.canonicalUrl()} method="get" id="adminbarsearch">
+                                    <input className="adminbar-input" name="s" id="adminbar-search" type="text" value="" maxLength={150} onChange={()=>undefined} />
+                                    <label htmlFor="adminbar-search" className="screen-reader-text">Sök</label>
+                                    <input type="submit" className="adminbar-button" value="Sök" onChange={()=>undefined} />
+                                </form>
+                            </div>
+                        </li>
+                        <li id="wp-admin-bar-log-in"><a className="ab-item" href="https://login.wordpress.org/?locale=sv_SE">Logga in</a></li>
+                        <li id="wp-admin-bar-register"><a className="ab-item" href="https://login.wordpress.org/register?locale=sv_SE">Registrera</a></li>
+                    </ul>			
+                ) : null}
             </div>
         </div>
     </>)
-});
+}) as ViewResult;

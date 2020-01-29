@@ -116,10 +116,10 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
     }
 
     public async renderPartial(viewName: string, model?: {}) {
-        console.warn("RequestPipeline renderPartial()", viewName, model);
+        //console.warn("RequestPipeline renderPartial()", viewName, model);
         const view = await this.loadView(viewName);
 
-        console.log("RequestPipeline calling viewEngine.render()");
+        //console.log("RequestPipeline calling viewEngine.render()");
         const viewEngine = new ReactViewEngine(this); //TODO: Support alternative view engines
         const viewResult = await viewEngine.render(view, model);
         return await viewResult.component;
@@ -127,30 +127,29 @@ export default class RequestPipelineClass /*implements RequestPipeline*/ {
 
 
     public publicPath(path: string) { return `/public/${path}`; }
-    public templatePath(path: string) {
-        console.log("RequestPipeline.templatePath()", path);
-         return `/templates/${this.templateName}/${path}`; 
+    public templatePath(path: string) { return `/templates/${this.templateName}/${path}`; }
+
+    public canonicalUrl(): string {
+
+        //TODO: Hard coded "lookup" from the menu database
+        if(this.route.component === "np-core-page"){
+            if(this.route.action === "Index"){
+                switch(this.route.parameters["page"]){
+                    case 251: return "/";
+                    case 858: return "/support/";
+                    case 689: return "/news/";
+                }
+            }
+        }
+
+        //Fallback canonical url for pages without menu item
+        const url = `/?component=${this.route.component}&action=${this.route.action}`;
+        if (!this.route.parameters) 
+            return url;
+        const parameters = Object.keys(this.route.parameters).map(key => key + "=" + this.route.parameters[key]);
+        const canonicalUrl = url + "&" + parameters.join("&");
+        
+        console.log("canonicalUrl()", this.route, canonicalUrl);
+        return canonicalUrl;
     }
 }
-
-
-/*
-
-        const viewHelper: ViewHelper = {
-            // actionString: async (route: Route) => {
-            //     console.warn("React viewEngine requested to execute actionString", route);
-            //     return await this.router.renderAction(this.request, route);
-            // },
-            action: async (route: Route) => {
-                console.warn("React viewEngine requested to execute action", route);
-                const props =  { dangerouslySetInnerHTML: { __html: await this.router.renderAction(this.request, route) }};
-                const element = React.createElement("div", props);
-                return element;
-            },
-            partial: async (view: string, model?: {}) => {
-                console.warn("React viewEngine requested partial", view, model);
-                const partialResult = await this.renderInternal({view, model}, viewHelper);
-                return partialResult.page;
-            },
-        };
-*/

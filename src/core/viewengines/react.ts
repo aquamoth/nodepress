@@ -16,7 +16,7 @@ export default class ReactViewEngine /*implements ViewEngine*/ {
 
     public async render(view: View, model: {}): Promise<ViewResult> {
         console.log("react viewengine rendering view");
-        let viewResult = view(model, this.pipeline);
+        let viewResult = await view(model, this.pipeline);
 
         if (viewResult.layout) { //TODO: while()!
             console.log("react viewengine wrapping component in", viewResult.layout);
@@ -25,6 +25,9 @@ export default class ReactViewEngine /*implements ViewEngine*/ {
             const layoutResult: ViewResult = await layout(viewResult.component, this.pipeline);
             // console.log("react viewengine received layoutResult", layoutResult);
             viewResult = layoutResult;
+        }
+        else {
+            console.log("react viewengine did not find a layout in the ViewResult", viewResult);
         }
 
         return viewResult;

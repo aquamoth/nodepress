@@ -1,7 +1,6 @@
 export type Menu = {
     id: string;
     items: MenuItem[];
-    currentUrl: string;
 };
 
 export type MenuItem = {

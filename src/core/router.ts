@@ -72,19 +72,20 @@ export default class Router {
         }
     }
 
-
     public buildRoute(url: string): Route {
 
         //TODO: Properly decode url to Route!
+        if(url.endsWith("/"))
+            url = url.substring(0, url.length-1);
 
-        if (url !== "/")
-            return null;
+        switch (url) {
+            case "": return { component: "np-core-page", action: "Index", parameters: { page: 251 } };
+            case "/support": return { component: "np-core-page", action: "Index", parameters: { page: 858 } };
+            case "/news": return { component: "np-core-page", action: "Index", parameters: { page: 689 } };
+        }
 
-        return {
-            component: "np-core-page",
-            action: "Index",
-            parameters: { page: 123 }
-        };
+        console.warn("ROUTER COULD NOT HANDLE", url);
+        return null;
     }
 
     public initializeComponent(componentName: string): Component {

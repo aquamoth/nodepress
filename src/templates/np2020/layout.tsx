@@ -38,7 +38,7 @@ async function MyLayout(component: Promise<JSX.Element>, pipeline: RequestPipeli
                     {await component}
 
 
-                    {await pipeline.renderPartial("adminbar")}
+                    {await pipeline.renderPartial("adminbar", {showSecondary: true})}
 
                     {/* <script src="/app.bundle.js"></script> */}
                 </body>

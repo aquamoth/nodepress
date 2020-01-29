@@ -15,7 +15,7 @@ export interface ActionResult extends PluginResult {
 
 export type Action = (model: {}) => ActionResult;
 
-export type View = (model: {}, pipeline: RequestPipeline) => ViewResult;
+export type View = (model: {}, pipeline: RequestPipeline) => Promise<ViewResult>;
 
 export interface ViewResult {
     component: Promise<JSX.Element>;
